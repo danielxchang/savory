@@ -1,0 +1,15 @@
+.company-name {
+    color: orange;
+}
+
+#log-out-btn {
+    font-size: 1.75rem;
+}
+
+#log-out-btn:hover span {
+    display: none;
+}
+
+#log-out-btn:hover:before {
+  content: "Log Out"
+}
