@@ -14,7 +14,10 @@ app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 Bootstrap(app)
 
 # Connect to Database
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///savory.db").replace("postgres:", "postgresql:" )
+uri = os.environ.get("DATABASE_URL", "sqlite:///savory.db")
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
