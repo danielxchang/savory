@@ -38,10 +38,12 @@ class Customer(UserMixin, db.Model):
 
 # db.create_all()
 
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+# Global variables
+meals = [meal.to_dict() for meal in Meal.query.all()]
+cart = {}
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -201,6 +203,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    meals = [meal.to_dict() for meal in Meal.query.all()]
-    cart = {}
     app.run(port=4242, debug=True)
