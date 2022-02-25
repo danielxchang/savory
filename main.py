@@ -10,11 +10,14 @@ import os
 stripe.api_key = os.environ.get('STRIPE_API_KEY')
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 Bootstrap(app)
 
 # Connect to Database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///savory.db'
+uri = os.environ.get("DATABASE_URL", "sqlite:///savory.db")
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -38,10 +41,12 @@ class Customer(UserMixin, db.Model):
 
 # db.create_all()
 
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+# Global variables
+meals = [meal.to_dict() for meal in Meal.query.all()]
+cart = {}
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -201,6 +206,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    meals = [meal.to_dict() for meal in Meal.query.all()]
-    cart = {}
-    app.run(port=4242, debug=True)
+    app.run()
