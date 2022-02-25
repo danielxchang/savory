@@ -5,8 +5,10 @@ from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from forms import RegisterForm, LoginForm
 import stripe
+from dotenv import load_dotenv
 import os
 
+load_dotenv()
 stripe.api_key = os.environ.get('STRIPE_API_KEY')
 
 app = Flask(__name__)
@@ -75,8 +77,8 @@ def create_checkout_session():
         if cart:
             session = stripe.checkout.Session.create(line_items=get_line_items()[0],
                                                      mode='payment',
-                                                     success_url='http://127.0.0.1:4242/order/success',
-                                                     cancel_url='http://127.0.0.1:4242/cancel')
+                                                     success_url='http://127.0.0.1:5000/order/success',
+                                                     cancel_url='http://127.0.0.1:5000/cancel')
             return redirect(session.url, code=303)
         else:
             return redirect(url_for('home'))
